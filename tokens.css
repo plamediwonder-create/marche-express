@@ -1,0 +1,148 @@
+/* ============================================================================
+   Marché Express : jetons de design (design tokens)
+   Seul fichier où des couleurs, tailles, espacements et ombres sont définis.
+   Tout le reste (app.css, index.html, offline.html) utilise var(--…).
+   Vérification automatique : node check-design.js
+   ============================================================================ */
+
+/* ---------- Police unique : Inter (hébergée avec l'application) ---------- */
+@font-face{font-family:"Inter";font-style:normal;font-weight:400;font-display:swap;src:url("fonts/inter-400.woff") format("woff")}
+@font-face{font-family:"Inter";font-style:normal;font-weight:500;font-display:swap;src:url("fonts/inter-500.woff") format("woff")}
+@font-face{font-family:"Inter";font-style:normal;font-weight:700;font-display:swap;src:url("fonts/inter-700.woff") format("woff")}
+
+:root{
+  /* ----- Couleurs de marque ----- */
+  --color-primary:#0b6b8a;            /* bleu pétrole */
+  --color-primary-strong:#095772;     /* survol / appui */
+  --color-primary-soft:#d6ecf3;       /* fonds légers, étape en cours */
+  --color-primary-alt:#12a3a0;        /* fin du dégradé de marque */
+  --color-on-primary:#ffffff;         /* texte posé sur la couleur principale */
+  --gradient-brand:linear-gradient(145deg,var(--color-primary),var(--color-primary-alt));
+  --color-brand:#0b6b8a;              /* bleu pétrole fixe (écran de démarrage, barre du téléphone) : ne change pas en thème sombre */
+  --color-on-brand:#ffffff;
+
+  /* ----- Fonds, texte, traits ----- */
+  --color-bg:#eef2f3;
+  --color-surface:#ffffff;
+  --color-surface-2:#e1e9ec;
+  --color-line:#d3dfe3;
+  --color-text:#0f2229;
+  --color-text-muted:#566b73;
+
+  /* ----- États ----- */
+  --color-success:#1f7446;  --color-success-soft:#daf0e2;
+  --color-error:#a92b1a;    --color-error-soft:#f7dad4;
+  --color-warning:#8f5400;  --color-warning-soft:#fae8c6;
+  --color-info:#0b6b8a;     --color-info-soft:#d6ecf3;
+  --color-accent:#c2410c;   --color-accent-soft:#ffe6d6;   /* promotions et compteurs */
+  --color-whatsapp:#1f9d55;
+
+  /* ----- Surcouches ----- */
+  --color-overlay:rgba(5,20,26,.55);
+  --color-scrim:rgba(0,0,0,.6);
+  --color-toast:#0f2229;
+  --color-on-toast:#ffffff;
+
+  /* ----- Logo (les couleurs du fichier SVG passent par ces jetons) ----- */
+  --logo-tile:#ffffff;
+  --logo-m:#1b5fb5;
+  --logo-accent:#f59e0b;
+
+  /* ----- Pastilles de couleur (teinte --h fournie par chaque boutique) ----- */
+  --tile-s:42%; --tile-l:88%; --tile-ink-s:40%; --tile-ink-l:30%;
+
+  /* ----- Police et tailles de texte ----- */
+  --font:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --text-xs:12px;
+  --text-sm:13px;
+  --text-base:15px;
+  --text-md:16px;
+  --text-lg:18px;
+  --text-xl:22px;
+  --text-2xl:28px;
+  --weight-normal:400; --weight-medium:500; --weight-bold:700;
+  --leading-tight:1.2; --leading-normal:1.45;
+
+  /* ----- Espacements : échelle de 4 px ----- */
+  --space-1:4px;  --space-2:8px;  --space-3:12px; --space-4:16px;
+  --space-5:20px; --space-6:24px; --space-8:32px; --space-10:40px; --space-12:48px;
+
+  /* ----- Rayons : 12 px pour les cartes et les boutons ----- */
+  --radius:12px;
+  --radius-sm:8px;
+  --radius-lg:20px;
+  --radius-pill:999px;
+  --radius-round:50%;
+
+  /* ----- Ombres légères ----- */
+  --shadow-sm:0 1px 2px rgba(15,34,41,.06),0 2px 8px rgba(15,34,41,.06);
+  --shadow-md:0 4px 14px rgba(15,34,41,.10);
+  --shadow-lg:0 8px 30px rgba(15,34,41,.18);
+  --shadow-up:0 -1px 0 var(--color-line),0 -6px 18px rgba(15,34,41,.06);
+
+  /* ----- Mouvement ----- */
+  --dur-fast:120ms;
+  --dur:200ms;
+  --ease:cubic-bezier(.2,.7,.2,1);
+
+  /* ----- Mise en page ----- */
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+  --gutter-l:max(var(--space-4),env(safe-area-inset-left,0px));
+  --gutter-r:max(var(--space-4),env(safe-area-inset-right,0px));
+  --max-width:1180px;
+  --nav-h:58px;
+  --buybar-h:76px;                    /* mis à jour par le script avec la hauteur réelle */
+  --bottom-offset:var(--safe-bottom); /* espace occupé en bas par la barre fixe */
+  --control-h:44px;                   /* hauteur minimale des champs et boutons */
+
+  /* ----- Couches ----- */
+  --z-nav:40; --z-bar:50; --z-fab:45; --z-menu:70; --z-toast:80; --z-offline:90; --z-modal:100; --z-splash:200;
+
+  color-scheme:light;
+}
+
+/* ---------- Thème sombre (réglage du téléphone, ou data-theme="dark") ---------- */
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --color-primary:#52b8d8; --color-primary-strong:#7ccbe4; --color-primary-soft:#143746; --color-primary-alt:#2bc4bf;
+    --color-on-primary:#04212b;
+    --color-bg:#0b171c; --color-surface:#12232a; --color-surface-2:#1b2f38; --color-line:#27424c;
+    --color-text:#e6f0f3; --color-text-muted:#9ab1ba;
+    --color-success:#62c690; --color-success-soft:#143525;
+    --color-error:#f29080;   --color-error-soft:#3b1e19;
+    --color-warning:#ebb44f; --color-warning-soft:#392c10;
+    --color-info:#52b8d8;    --color-info-soft:#143746;
+    --color-accent:#ff9a5c;  --color-accent-soft:#41230f;
+    --color-toast:#e6f0f3; --color-on-toast:#0b171c;
+    --logo-m:#4f93e0;
+    --tile-s:28%; --tile-l:24%; --tile-ink-s:40%; --tile-ink-l:80%;
+    --shadow-sm:0 1px 2px rgba(0,0,0,.3),0 2px 8px rgba(0,0,0,.25);
+    --shadow-md:0 4px 14px rgba(0,0,0,.3);
+    --shadow-up:0 -1px 0 var(--color-line),0 -6px 18px rgba(0,0,0,.3);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --color-primary:#52b8d8; --color-primary-strong:#7ccbe4; --color-primary-soft:#143746; --color-primary-alt:#2bc4bf;
+  --color-on-primary:#04212b;
+  --color-bg:#0b171c; --color-surface:#12232a; --color-surface-2:#1b2f38; --color-line:#27424c;
+  --color-text:#e6f0f3; --color-text-muted:#9ab1ba;
+  --color-success:#62c690; --color-success-soft:#143525;
+  --color-error:#f29080;   --color-error-soft:#3b1e19;
+  --color-warning:#ebb44f; --color-warning-soft:#392c10;
+  --color-info:#52b8d8;    --color-info-soft:#143746;
+  --color-accent:#ff9a5c;  --color-accent-soft:#41230f;
+  --color-toast:#e6f0f3; --color-on-toast:#0b171c;
+  --logo-m:#4f93e0;
+  --tile-s:28%; --tile-l:24%; --tile-ink-s:40%; --tile-ink-l:80%;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.3),0 2px 8px rgba(0,0,0,.25);
+  --shadow-md:0 4px 14px rgba(0,0,0,.3);
+  --shadow-up:0 -1px 0 var(--color-line),0 -6px 18px rgba(0,0,0,.3);
+  color-scheme:dark;
+}
+
+/* ---------- Réduire les animations : aucune transition ni animation ---------- */
+@media (prefers-reduced-motion: reduce){
+  :root{--dur-fast:0ms;--dur:0ms}
+}
