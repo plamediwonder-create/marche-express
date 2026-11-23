@@ -416,7 +416,7 @@ var SUPABASE_URL='https://yslyxpgxoylswiqarhzp.supabase.co';
 var SUPABASE_KEY='sb_publishable_DJVdYv_RCnW2wqTNWmOcKg_xfve7hr-';
 var CURRENCY='FC';
 var MAX_IMG=5;
-var APP_VERSION='1.2.0';
+var APP_VERSION='1.2.1';
 var PAGE_SIZE=24;
 var SUPPORT_EMAIL='plamediwonder@gmail.com';
 var MAX_LINE=50,MAX_TOTAL=100;
@@ -2155,7 +2155,7 @@ var DOCS={
   '<h2>Contact</h2><p>{EMAIL}</p><p class="upd">Dernière mise à jour : novembre 2026.</p>'}
 };
 function aboutHtml(){
-  var logo=($('tpl-logo').innerHTML||'');
+  var logo=LOGO_USE;
   return '<div class="card card-pad about-head"><div class="brandpill">'+logo+'</div><div class="ver">Version '+APP_VERSION+'</div>'+
     '<p>Marché Express connecte des boutiques et des clients. Chaque boutique gère son stock et livre vos commandes.</p></div>'+
     '<div class="card card-pad"><h2>Comment ça marche</h2><ol class="steps"><li><b>1</b><span>Choisissez vos produits</span></li><li><b>2</b><span>Passez commande</span></li><li><b>3</b><span>Suivez votre colis et recevez un message à chaque étape</span></li></ol></div>'+
@@ -2164,7 +2164,13 @@ function aboutHtml(){
       '<p class="u-mt-2">Marché Express a été conçu et est administré par PLAMEDI MAFANDALA, avec la volonté de faciliter les achats et la livraison.</p></div>'+
     '<div class="card card-pad"><h2>Informations</h2><ul class="steps"><li><a href="#legal/conditions">Conditions d’utilisation</a></li><li><a href="#legal/confidentialite">Politique de confidentialité</a></li><li><a href="#legal/retours">Retours et remboursements</a></li></ul>'+
       '<p class="hint u-mt-3">Support : '+emailLink()+'</p></div>'+
+    diagHtml()+
     '<p class="hint u-center">© 2026 Marché Express. Tous droits réservés.</p>';
+}
+function diagHtml(){
+  var a=[];try{a=JSON.parse(localStorage.getItem('mx-errlog')||'[]')}catch(x){}
+  if(!a.length)return '';
+  return '<div class="card card-pad"><h2>Diagnostic</h2><p class="hint u-mt-2">Derniers problèmes détectés sur cet appareil. Envoyez une capture de cette zone au support.</p><ul class="steps">'+a.map(function(x){return '<li><span><b>'+esc(x.t)+'</b> · v'+esc(x.v||'')+' · '+esc(x.p||'')+'<br>'+esc(x.m)+(x.w?' ('+esc(x.w)+')':'')+'</span></li>'}).join('')+'</ul></div>';
 }
 function showDoc(){
   document.body.classList.remove('on-auth','has-nav','has-buybar');
@@ -2196,9 +2202,31 @@ function logErr(msg){
   if(!S.me||!NET.ok)return;
   try{sb.rpc('log_client_error',{p_message:String(msg||'Erreur inconnue').slice(0,300),p_page:location.hash.slice(0,80),p_agent:(navigator.userAgent||'').slice(0,200)}).then(function(){},function(){})}catch(x){}
 }
-function softError(msg){var n=Date.now();if(n-S.lastErr<4000)return;S.lastErr=n;toast('Un problème est survenu. Réessayez dans un instant.','bad');logErr(msg)}
-window.addEventListener('error',function(e){if(e&&e.message&&!/ResizeObserver/.test(e.message))softError(e.message)});
-window.addEventListener('unhandledrejection',function(e){var r=e&&e.reason;softError(r&&r.message?r.message:String(r||''));if(e&&e.preventDefault)e.preventDefault()});
+/* Journal des erreurs : gardé sur le téléphone (jamais envoyé ailleurs) et affiché dans « À propos », pour savoir quoi corriger */
+function noteErr(msg,where){
+  try{
+    var a=JSON.parse(localStorage.getItem('mx-errlog')||'[]');
+    a.unshift({t:new Date().toISOString().slice(0,19).replace('T',' '),m:String(msg||'').slice(0,160),w:String(where||'').slice(0,80),p:location.hash.slice(0,40),v:APP_VERSION});
+    localStorage.setItem('mx-errlog',JSON.stringify(a.slice(0,5)));
+  }catch(x){}
+}
+function softError(msg,where){
+  noteErr(msg,where);
+  var n=Date.now();if(n-S.lastErr<4000)return;S.lastErr=n;
+  toast('Un problème est survenu. Réessayez dans un instant.'+(msg?' (détail : '+String(msg).replace(/^Uncaught\s*/,'').slice(0,90)+')':''),'bad');logErr(msg)
+}
+window.addEventListener('error',function(e){
+  if(!e||!e.message||/ResizeObserver|^Script error\.?$/.test(e.message))return;
+  softError(e.message,(e.filename||'').split('/').pop()+':'+(e.lineno||'?'));
+});
+window.addEventListener('unhandledrejection',function(e){
+  var r=e&&e.reason;
+  if(e&&e.preventDefault)e.preventDefault();
+  var m=r&&r.message?r.message:(typeof r==='string'?r:'');
+  if(!m){noteErr('Rejet sans message ('+(r===undefined?'undefined':(r&&r.constructor&&r.constructor.name)||typeof r)+')','promesse');return}   /* rien d'utile à dire à l'utilisateur : on garde juste une trace */
+  if(/Failed to update a ServiceWorker|Load failed|Failed to fetch|NetworkError/i.test(m)){noteErr(m,'réseau');return}                  /* réseau lent : géré par le test de connexion */
+  softError(m,'promesse');
+});
 onlineState();
 
 /* ================= INSTALLATION (PWA) ================= */
@@ -2223,7 +2251,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')$('ioshelp')
 updateInstall();
 if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js').then(function(reg){reg.update()}).catch(function(){});
+    navigator.serviceWorker.register('sw.js').then(function(reg){return reg.update()}).catch(function(){});
     navigator.serviceWorker.addEventListener('message',function(e){if(e.data&&e.data.type==='shell-updated')toast(C.toast.shellUpdated,'info')});
   });
 }
