@@ -514,3 +514,6 @@ html[data-splash] #splash.is-hiding{opacity:0;transition:opacity 250ms var(--eas
 
 /* Aucun défilement horizontal de la page (les animations de glissement ne doivent jamais l'élargir) */
 html,body{overflow-x:clip}
+
+/* Liens d'information de l'écran de connexion : zone de toucher d'au moins 44 px, pour ne pas ouvrir le lien voisin */
+.legal-links a{display:inline-flex;align-items:center;min-height:44px;padding:0 var(--space-2)}
