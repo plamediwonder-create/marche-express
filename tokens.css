@@ -40,6 +40,7 @@
   /* ----- Surcouches ----- */
   --color-overlay:rgba(5,20,26,.55);
   --color-scrim:rgba(0,0,0,.6);
+  --color-seller:#16384c; --color-on-seller:#ffffff;
   --color-toast:#0f2229;
   --color-on-toast:#ffffff;
 
@@ -114,7 +115,8 @@
     --color-warning:#ebb44f; --color-warning-soft:#392c10;
     --color-info:#52b8d8;    --color-info-soft:#143746;
     --color-accent:#ff9a5c;  --color-accent-soft:#41230f;
-    --color-toast:#e6f0f3; --color-on-toast:#0b171c;
+    --color-seller:#2b566f; --color-on-seller:#ffffff;
+  --color-toast:#e6f0f3; --color-on-toast:#0b171c;
     --logo-m:#4f93e0;
     --tile-s:28%; --tile-l:24%; --tile-ink-s:40%; --tile-ink-l:80%;
     --shadow-sm:0 1px 2px rgba(0,0,0,.3),0 2px 8px rgba(0,0,0,.25);
@@ -133,6 +135,7 @@
   --color-warning:#ebb44f; --color-warning-soft:#392c10;
   --color-info:#52b8d8;    --color-info-soft:#143746;
   --color-accent:#ff9a5c;  --color-accent-soft:#41230f;
+  --color-seller:#2b566f; --color-on-seller:#ffffff;
   --color-toast:#e6f0f3; --color-on-toast:#0b171c;
   --logo-m:#4f93e0;
   --tile-s:28%; --tile-l:24%; --tile-ink-s:40%; --tile-ink-l:80%;
