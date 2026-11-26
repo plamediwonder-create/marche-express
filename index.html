@@ -417,7 +417,7 @@ var SUPABASE_URL='https://yslyxpgxoylswiqarhzp.supabase.co';
 var SUPABASE_KEY='sb_publishable_DJVdYv_RCnW2wqTNWmOcKg_xfve7hr-';
 var CURRENCY='FC';
 var MAX_IMG=5;
-var APP_VERSION='1.3.0';
+var APP_VERSION='1.3.1';
 var PAGE_SIZE=24;
 var SUPPORT_EMAIL='plamediwonder@gmail.com';
 var MAX_LINE=50,MAX_TOTAL=100;
@@ -764,6 +764,15 @@ function imgs(p){return (p.images&&p.images.length)?p.images:(p.photo_url?[p.pho
 function promo(p){return p.old_price!=null&&Number(p.old_price)>p.price}
 function pct(p){return Math.round((Number(p.old_price)-p.price)/Number(p.old_price)*100)}
 function cap(p){return Math.min(p.stock,MAX_LINE)}
+/* Ajoute au panier sans dépasser le stock ni les limites par commande ; renvoie false si rien n'a pu être ajouté */
+function addToCart(p,q){
+  q=Math.max(1,Math.floor(q)||1);
+  var room=Math.min(cap(p)-(S.cart[p.id]||0),MAX_TOTAL-cartTotalQty());
+  if(room<=0){toast('Quantité maximale atteinte pour ce produit.','bad');return false}
+  S.cart[p.id]=(S.cart[p.id]||0)+Math.min(q,room);
+  saveCart();touchCart();
+  return true;
+}
 function cartTotalQty(){return Object.keys(S.cart).reduce(function(a,k){return a+(S.cart[k]||0)},0)}
 function touchCart(){S.orderKey=null;showOrderErr('')}
 function stockInfo(p){

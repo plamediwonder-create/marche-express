@@ -6,7 +6,7 @@
      deux fois de suite ; elle vérifie elle-même la connexion et rouvre l'application toute seule.
    À CHAQUE MISE EN LIGNE : changez VERSION ci-dessous. */
 'use strict';
-const VERSION = '6';
+const VERSION = '7';
 const SHELL_CACHE = 'mx-shell-v' + VERSION;
 const LIB_CACHE = 'mx-lib-v1';                      /* bibliothèques externes à version fixe */
 const ROOT = new URL('./', self.registration.scope).href;
